@@ -42,16 +42,18 @@ if __name__ == '__main__':
         EC.visibility_of_element_located((By.ID, 'login-user'))
     ).send_keys(login)
     driver.find_element_by_id('login-password').send_keys(password)
+
+    try:
+        driver.find_element_by_css_selector('#consentContainer input').click()
+    except:
+        pass
+
     driver.find_element_by_id('login-submit').click()
     time.sleep(1)
     driver.get('https://global.americanexpress.com/offers/eligible')
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, '//span[text()="Amex Offers"]'))
     )
-    try:
-        driver.find_element_by_css_selector('#consentContainer input').click()
-    except:
-        pass
 
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, 'offer-category-menu'))
