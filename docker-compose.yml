@@ -1,0 +1,14 @@
+version: '3'
+services:
+  selenium:
+    image: 'selenium/standalone-chrome'
+  amexer:
+    image: 'virus/amex-auto-save'
+    build: ./
+    restart: on-failure
+    volumes:
+      - ./main.py:/usr/src/app/main.py
+    depends_on:
+      - selenium
+    env_file:
+      - ./.env
