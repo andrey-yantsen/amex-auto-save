@@ -37,7 +37,9 @@ TELEGRAM_CHAT_ID=<USER_ID>
 Replace `<LOGIN>` with your AmEx username and `<PASSWORD>` with your password. `RESTART_DELAY` variable should be set to
 an interval in seconds between checks — in this example it's 1 hour (3600 seconds). To obtain a token for telegram you
 have to create a new bot using [@BotFather](https://t.me/BotFather), and to get your user_id in Telegram — just drop a
-message to [@userinfobot](https://t.me/userinfobot). 
+message to [@userinfobot](https://t.me/userinfobot).
+
+And, finally, run everything with `docker-compose up`.
 
 ## Option 2, less easy, using docker directly
 
