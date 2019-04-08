@@ -61,6 +61,11 @@ if __name__ == '__main__':
 
     offers = driver.find_elements_by_xpath('//section[@class="offers-list"]/section/div[@role="heading"]')
 
+    try:
+        driver.find_element_by_css_selector('#consentContainer input').click()
+    except:
+        pass
+
     print('Found offers: %d' % len(offers))
 
     for offer in offers:
