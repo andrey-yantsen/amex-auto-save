@@ -7,15 +7,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-
-
-def quit(prompt: str):
-    print(prompt)
-    sleep = int(environ.get('RESTART_DELAY', 0))
-    if sleep > 0:
-        time.sleep(sleep)
-        exit(1)
-    exit(0)
+from selenium.common.exceptions import NoSuchElementException
 
 
 def notify(offer_info: str):
@@ -30,56 +22,68 @@ def notify(offer_info: str):
                      parse_mode=telegram.ParseMode.MARKDOWN)
 
 
-if __name__ == '__main__':
+def do_magic():
     login = environ['LOGIN']
     password = environ['PASSWORD']
     host = environ.get('SELENIUM_HOST', 'selenium')
 
     driver = webdriver.Remote(command_executor='http://%s:4444/wd/hub' % host,
                               desired_capabilities=DesiredCapabilities.CHROME)
-    driver.get('https://www.americanexpress.com/uk/')
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located((By.ID, 'login-user'))
-    ).send_keys(login)
-    driver.find_element_by_id('login-password').send_keys(password)
-
     try:
-        driver.find_element_by_css_selector('#consentContainer input').click()
-    except:
-        pass
+        driver.get('https://www.americanexpress.com/uk/')
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.ID, 'login-user'))
+        ).send_keys(login)
+        driver.find_element_by_id('login-password').send_keys(password)
 
-    driver.find_element_by_id('login-submit').click()
-    time.sleep(1)
-    driver.get('https://global.americanexpress.com/offers/eligible')
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, '//span[text()="Amex Offers"]'))
-    )
+        try:
+            driver.find_element_by_css_selector('#consentContainer input').click()
+        except NoSuchElementException:
+            pass
 
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, 'offer-category-menu'))
-    )
+        driver.find_element_by_id('login-submit').click()
+        time.sleep(1)
+        driver.get('https://global.americanexpress.com/offers/eligible')
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//span[text()="Amex Offers"]'))
+        )
 
-    offers = driver.find_elements_by_xpath('//section[@class="offers-list"]/section/div[@role="heading"]')
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, 'offer-category-menu'))
+        )
 
-    try:
-        driver.find_element_by_css_selector('#consentContainer input').click()
-    except:
-        pass
+        offers = driver.find_elements_by_xpath('//section[@class="offers-list"]/section/div[@role="heading"]')
 
-    print('Found offers: %d' % len(offers))
+        try:
+            driver.find_element_by_css_selector('#consentContainer input').click()
+        except NoSuchElementException:
+            pass
 
-    for offer in offers:
-        details = offer.find_elements_by_xpath('.//div[contains(concat(" ", @class, " "), " offer-info ")]/p')
-        bonus = details[0].text
-        merchant = details[1].text
+        if offers:
+            print('Found offers: %d' % len(offers))
 
-        print('%s: %s... ' % (merchant, bonus), end='')
+            for offer in offers:
+                details = offer.find_elements_by_xpath('.//div[contains(concat(" ", @class, " "), " offer-info ")]/p')
+                bonus = details[0].text
+                merchant = details[1].text
 
-        btn = offer.find_element_by_xpath('.//button[@type="button"][./span]')
-        btn.click()
-        WebDriverWait(driver, 15).until(EC.staleness_of(btn))
-        print('saved')
+                print('%s: %s... ' % (merchant, bonus), end='')
 
-        notify('%s: %s ' % (merchant, bonus))
+                btn = offer.find_element_by_xpath('.//button[@type="button"][./span]')
+                btn.click()
+                WebDriverWait(driver, 15).until(EC.staleness_of(btn))
+                print('saved')
 
-    quit('Finished')
+                notify('%s: %s ' % (merchant, bonus))
+    finally:
+        driver.quit()
+
+
+if __name__ == '__main__':
+    while True:
+        do_magic()
+        sleep = int(environ.get('RESTART_DELAY', 0))
+        if sleep > 0:
+            time.sleep(sleep)
+        else:
+            break
