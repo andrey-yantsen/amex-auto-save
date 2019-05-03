@@ -52,7 +52,7 @@ def do_magic():
             EC.presence_of_element_located((By.ID, 'offer-category-menu'))
         )
 
-        offers = driver.find_elements_by_xpath('//section[@class="offers-list"]/section/div[@data-rowtype="offer"][div/div/a[@title!="Refer now"]]')
+        offers = driver.find_elements_by_xpath('//section[@class="offers-list"]/section/div[@data-rowtype="offer"][.//button/span[text()="Save to Card"]]')
 
         try:
             driver.find_element_by_css_selector('#consentContainer input').click()
