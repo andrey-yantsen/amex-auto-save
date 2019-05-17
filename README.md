@@ -12,8 +12,6 @@ Under the hood the script uses [Selenium Webdriver](https://www.seleniumhq.org/p
 have to provide your AmEx credentials, and the script will save the offers for you. It optionally can send notifications
 to a specific telegram chat.
 
-**Warning**: There is an issue [#1](https://github.com/andrey-yantsen/amex-auto-save/issues/1): sometimes AmEx forces you to reset the password, probably due to often logins from the scipt.
-
 # Setting up
 
 ## Option 1, easiest, using docker-compose
