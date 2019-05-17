@@ -43,8 +43,12 @@ def do_magic():
         except NoSuchElementException:
             pass
 
-        driver.find_element_by_id('login-submit').click()
-        time.sleep(1)
+        btn = driver.find_element_by_id('login-submit')
+        btn.click()
+        WebDriverWait(driver, 10).until(EC.staleness_of(btn))
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//h2[text()="Total balance"]'))
+        )
         driver.get('https://global.americanexpress.com/offers/eligible')
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//span[text()="Amex Offers"]'))
