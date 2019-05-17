@@ -1,5 +1,7 @@
 import time
 from os import environ
+from os.path import isdir
+from traceback import print_exc, format_exc
 
 import telegram
 from selenium import webdriver
@@ -7,10 +9,10 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
 
 
-def notify(offer_info: str):
+def notify(message: str):
     token = environ.get('TELEGRAM_TOKEN')
     if not token:
         return
@@ -18,7 +20,7 @@ def notify(offer_info: str):
     if not chat_id:
         return
     bot = telegram.Bot(token)
-    bot.send_message(chat_id=chat_id, text='AMEX offer saved — ' + offer_info, disable_web_page_preview=True,
+    bot.send_message(chat_id=chat_id, text=message, disable_web_page_preview=True,
                      parse_mode=telegram.ParseMode.MARKDOWN)
 
 
@@ -74,7 +76,14 @@ def do_magic():
                 WebDriverWait(driver, 15).until(EC.staleness_of(btn))
                 print('saved')
 
-                notify('%s: %s ' % (merchant, bonus))
+                notify('AMEX offer saved — %s: %s ' % (merchant, bonus))
+    except WebDriverException:
+        print_exc()
+        notify('Exception from AmEx saver: \n```\n' + format_exc() + '\n```')
+        if isdir('./screenshots'):
+            filename = './screenshots/%d.png' % time.time()
+            driver.save_screenshot(filename)
+            print('Got exception! Screenshot saved to %s' % filename)
     finally:
         driver.quit()
 
