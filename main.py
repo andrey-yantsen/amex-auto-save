@@ -24,6 +24,12 @@ def notify(message: str):
                      parse_mode=telegram.ParseMode.MARKDOWN)
 
 
+def send_keys_slow(el, text, delay=0.1):
+    for c in text:
+        el.send_keys(c)
+        time.sleep(delay)
+
+
 def do_magic():
     login = environ['LOGIN']
     password = environ['PASSWORD']
@@ -36,7 +42,7 @@ def do_magic():
         WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.ID, 'login-user'))
         ).send_keys(login)
-        driver.find_element_by_id('login-password').send_keys(password)
+        send_keys_slow(driver.find_element_by_id('login-password'), password)
 
         try:
             driver.find_element_by_css_selector('#consentContainer input').click()
