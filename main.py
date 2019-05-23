@@ -38,6 +38,7 @@ def do_magic():
     driver = webdriver.Remote(command_executor='http://%s:4444/wd/hub' % host,
                               desired_capabilities=DesiredCapabilities.CHROME)
     try:
+        driver.set_window_size(1440, 900)
         driver.get('https://www.americanexpress.com/uk/')
         WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.ID, 'login-user'))
@@ -73,6 +74,8 @@ def do_magic():
 
         if offers:
             print('Found offers: %d' % len(offers))
+
+            driver.execute_script('return document.getElementById("lpButtonDiv").remove();')
 
             for offer in offers:
                 details = offer.find_elements_by_xpath('.//div[contains(concat(" ", @class, " "), " offer-info ")]/p')
