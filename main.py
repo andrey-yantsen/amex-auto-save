@@ -40,15 +40,16 @@ def do_magic():
     try:
         driver.set_window_size(1440, 900)
         driver.get('https://www.americanexpress.com/uk/')
-        WebDriverWait(driver, 10).until(
+        login_input = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.ID, 'login-user'))
-        ).send_keys(login)
-        send_keys_slow(driver.find_element_by_id('login-password'), password)
+        )
 
-        try:
-            driver.find_element_by_css_selector('#consentContainer input').click()
-        except NoSuchElementException:
-            pass
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, '#consentContainer input'))
+        ).click()
+
+        send_keys_slow(login_input, login)
+        send_keys_slow(driver.find_element_by_id('login-password'), password)
 
         btn = driver.find_element_by_id('login-submit')
         btn.click()
@@ -66,11 +67,6 @@ def do_magic():
         )
 
         offers = driver.find_elements_by_xpath('//section[@class="offers-list"]/section/div[@data-rowtype="offer"][.//button/span[text()="Save to Card"]]')
-
-        try:
-            driver.find_element_by_css_selector('#consentContainer input').click()
-        except NoSuchElementException:
-            pass
 
         if offers:
             print('Found offers: %d' % len(offers))
