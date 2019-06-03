@@ -62,9 +62,20 @@ def do_magic():
             EC.presence_of_element_located((By.XPATH, '//span[text()="Amex Offers"]'))
         )
 
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, 'offer-category-menu'))
-        )
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, 'offer-category-menu'))
+            )
+        except NoSuchElementException as e:
+            alert_xpath = '//section[@class="offers-list"]//div[contains(@class, "alert-dialog")]//p/span'
+            notice = None
+            try:
+                notice = driver.find_element_by_xpath(alert_xpath)
+            except:
+                pass
+
+            if not notice or notice.text != 'You currently have no available Offers. Please try again later.':
+                raise e
 
         offers = driver.find_elements_by_xpath('//section[@class="offers-list"]/section/div[@data-rowtype="offer"][.//button/span[text()="Save to Card"]]')
 
