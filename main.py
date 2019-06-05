@@ -9,7 +9,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 
 
 def notify(message: str):
@@ -66,15 +66,18 @@ def do_magic():
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, 'offer-category-menu'))
             )
-        except NoSuchElementException as e:
+        except TimeoutException as e:
             alert_xpath = '//section[@class="offers-list"]//div[contains(@class, "alert-dialog")]//p/span'
             notice = None
             try:
                 notice = driver.find_element_by_xpath(alert_xpath)
-            except:
+            except NoSuchElementException:
+                print('Notice not found')
                 pass
 
             if not notice or notice.text != 'You currently have no available Offers. Please try again later.':
+                if notice:
+                    print('Unexpected notice text: "%s"' % notice.text)
                 raise e
 
         offers = driver.find_elements_by_xpath('//section[@class="offers-list"]/section/div[@data-rowtype="offer"][.//button/span[text()="Save to Card"]]')
