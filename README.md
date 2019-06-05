@@ -4,17 +4,13 @@ It's a simple script to automatically save all available offers for your AmEx ca
 
 # What's supported?
 
-At the moment the script was tested only with British Airways AMEX card.
+At the moment the script was tested only with British Airways American Express Credit Card.
 
 # How it's working?
 
 Under the hood the script uses [Selenium Webdriver](https://www.seleniumhq.org/projects/webdriver/) and Python3. You
 have to provide your AmEx credentials, and the script will save the offers for you. It optionally can send notifications
 to a specific telegram chat.
-
-# Which cards were tested?
-
-Just one, unfortunately: British Airways American Express Credit Card
 
 # Setting up
 
