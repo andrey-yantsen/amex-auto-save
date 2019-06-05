@@ -12,6 +12,10 @@ Under the hood the script uses [Selenium Webdriver](https://www.seleniumhq.org/p
 have to provide your AmEx credentials, and the script will save the offers for you. It optionally can send notifications
 to a specific telegram chat.
 
+# Which cards were tested?
+
+Just one, unfortunately: British Airways American Express Credit Card
+
 # Setting up
 
 ## Option 1, easiest, using docker-compose
