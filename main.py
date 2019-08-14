@@ -39,9 +39,9 @@ def do_magic():
                               desired_capabilities=DesiredCapabilities.CHROME)
     try:
         driver.set_window_size(1440, 900)
-        driver.get('https://www.americanexpress.com/uk/')
+        driver.get('https://global.americanexpress.com/login')
         login_input = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.ID, 'login-user'))
+            EC.visibility_of_element_located((By.ID, 'eliloUserID'))
         )
 
         WebDriverWait(driver, 10).until(
@@ -49,9 +49,9 @@ def do_magic():
         ).click()
 
         send_keys_slow(login_input, login)
-        send_keys_slow(driver.find_element_by_id('login-password'), password)
+        send_keys_slow(driver.find_element_by_id('eliloPassword'), password)
 
-        btn = driver.find_element_by_id('login-submit')
+        btn = driver.find_element_by_id('loginSubmit')
         btn.click()
         WebDriverWait(driver, 10).until(EC.staleness_of(btn))
         WebDriverWait(driver, 10).until(
