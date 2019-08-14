@@ -44,12 +44,15 @@ def do_magic():
             EC.visibility_of_element_located((By.ID, 'eliloUserID'))
         )
 
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, '#consentContainer input'))
-        ).click()
-
         send_keys_slow(login_input, login)
         send_keys_slow(driver.find_element_by_id('eliloPassword'), password)
+
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, '#consentContainer input'))
+            ).click()
+        except TimeoutException:
+            pass
 
         btn = driver.find_element_by_id('loginSubmit')
         btn.click()
