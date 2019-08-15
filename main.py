@@ -97,6 +97,13 @@ def do_magic():
 
                 print('%s: %s... ' % (merchant, bonus), end='')
 
+                try:
+                    element = driver.find_element_by_css_selector('#consentContainer #sprite-ContinueButton_EN')
+                    if element.is_displayed():
+                        element.click()
+                except NoSuchElementException:
+                    pass
+
                 btn = offer.find_element_by_xpath('.//button[@type="button"][./span]')
                 btn.click()
                 WebDriverWait(driver, 15).until(EC.staleness_of(btn))
