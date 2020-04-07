@@ -88,7 +88,7 @@ def do_magic():
         if offers:
             print('Found offers: %d' % len(offers))
 
-            driver.execute_script('return document.getElementById("lpButtonDiv").remove();')
+            driver.execute_script('var btn = document.getElementById("lpButtonDiv"); if (btn) btn.remove();')
 
             for offer in offers:
                 details = offer.find_elements_by_xpath('.//div[contains(concat(" ", @class, " "), " offer-info ")]/p')
