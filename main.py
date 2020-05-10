@@ -102,7 +102,12 @@ def do_magic():
                     if element.is_displayed():
                         element.click()
                 except NoSuchElementException:
-                    pass
+                    try:
+                        element = driver.find_element_by_css_selector('#consentContainer #sprite-AcceptButton_EN')
+                        if element.is_displayed():
+                            element.click()
+                    except NoSuchElementException:
+                        pass
 
                 btn = offer.find_element_by_xpath('.//button[@type="button"][./span]')
                 btn.click()
