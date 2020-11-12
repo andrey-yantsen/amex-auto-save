@@ -47,13 +47,6 @@ def do_magic():
         send_keys_slow(login_input, login)
         send_keys_slow(driver.find_element_by_id('eliloPassword'), password)
 
-        try:
-            WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.CSS_SELECTOR, '#consentContainer input'))
-            ).click()
-        except TimeoutException:
-            pass
-
         btn = driver.find_element_by_id('loginSubmit')
         btn.click()
         WebDriverWait(driver, 10).until(EC.staleness_of(btn))
@@ -87,6 +80,13 @@ def do_magic():
 
         if offers:
             print('Found offers: %d' % len(offers))
+
+            try:
+                WebDriverWait(driver, 10).until(
+                        EC.visibility_of_element_located((By.XPATH, '//div[@class="consentContainer"]//input[@id="sprite-DeclineButton_EN"]'))
+                        ).click()
+            except TimeoutException:
+                pass
 
             driver.execute_script('var btn = document.getElementById("lpButtonDiv"); if (btn) btn.remove();')
 
